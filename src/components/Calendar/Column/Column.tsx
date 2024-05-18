@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Column.module.scss";
 import type { ColumnProps } from "./Column.types";
 
@@ -16,6 +16,14 @@ import Row from "../Row/Row";
 const Column: React.FC<ColumnProps> = ({ date }) => {
   const weekDayName = format(date, "EEEE");
   const [hours, setHours] = useState<{ id: string; time: Date }[]>([]);
+  const [showAddButton, setShowAddButton] = useState(false);
+  const [maxBookedHoursReached, setMaxBookedHoursReached] = useState(false);
+
+  useEffect(() => {
+    hours.length === 5
+      ? setMaxBookedHoursReached(true)
+      : setMaxBookedHoursReached(false);
+  }, [hours]);
 
   const addTimeHandler = () => {
     if (!hours.length) {
@@ -44,8 +52,17 @@ const Column: React.FC<ColumnProps> = ({ date }) => {
     setHours(hoursCopy);
   };
 
+  const deleteTimeHandler = (id: string) => {
+    const filteredHours = hours.filter((hour) => hour.id !== id);
+    setHours(filteredHours);
+  };
+
   return (
-    <div className={styles.column}>
+    <div
+      className={styles.column}
+      onMouseEnter={() => setShowAddButton(true)}
+      onMouseLeave={() => setShowAddButton(false)}
+    >
       <div className={styles.columnHead}>
         <p>{weekDayName}</p>
 
@@ -54,10 +71,18 @@ const Column: React.FC<ColumnProps> = ({ date }) => {
 
       <div className={styles.columnBody}>
         {hours.map(({ time, id }) => (
-          <Row mode="displayTime" time={time} key={id} />
+          <Row
+            mode="displayTime"
+            time={time}
+            key={id}
+            id={id}
+            onDeleteTime={deleteTimeHandler}
+          />
         ))}
 
-        <Row mode="addTime" onAddTime={addTimeHandler} />
+        {showAddButton && !maxBookedHoursReached && (
+          <Row mode="addTime" onAddTime={addTimeHandler} />
+        )}
       </div>
     </div>
   );

@@ -4,8 +4,23 @@
   text-align: center;
   line-height: 50px;
   border: 1px solid red;
+  position: relative;
+
+  &--add {
+    cursor: pointer;
+  }
+
+  .deleteIcon {
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
 }
 
-.row+.row{
-margin-top: 5px;
+.row + .row {
+  margin-top: 5px;
 }
