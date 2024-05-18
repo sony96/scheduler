@@ -1,0 +1,17 @@
+.header {
+  padding: 30px 30px 10px;
+  border-bottom: 1px solid #bbbbbb;
+
+  .title {
+    margin-bottom: 50px;
+  }
+}
+
+.datePickers {
+  display: flex;
+  justify-content: flex-start;
+
+  & .picker {
+    margin: 0 10px;
+  }
+}
