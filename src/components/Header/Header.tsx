@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import styles from "./Header.module.scss";
-import { HeaderProps, DateHandler, DATE_TYPE } from "./Header.types";
+import type { HeaderProps, DateHandler } from "./Header.types";
+import { DATE_TYPE } from "./Header.constants";
 
 import { isAfter, isBefore } from "date-fns";
 
@@ -14,28 +15,31 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [error, setError] = useState("");
 
-  const handleDate: DateHandler = (date, type) => {
-    !!error && setError("");
+  const handleDate: DateHandler = useCallback(
+    (date, type) => {
+      !!error && setError("");
 
-    if (type === DATE_TYPE.START) {
-      if (endDate && isAfter(date, endDate)) {
-        setError("Start Date is After End Date!");
+      if (type === DATE_TYPE.START) {
+        if (endDate && isAfter(date, endDate)) {
+          setError("Start Date is After End Date!");
 
-        return;
+          return;
+        }
+
+        setStartDate(date);
       }
 
-      setStartDate(date);
-    }
+      if (type === DATE_TYPE.END) {
+        if (endDate && isBefore(date, startDate)) {
+          setError("End Date is Before Start Date!");
+          return;
+        }
 
-    if (type === DATE_TYPE.END) {
-      if (endDate && isBefore(date, startDate)) {
-        setError("End Date is Before Start Date!");
-        return;
+        setEndDate(date);
       }
-
-      setEndDate(date);
-    }
-  };
+    },
+    [startDate, endDate]
+  );
 
   return (
     <div className={styles.header}>

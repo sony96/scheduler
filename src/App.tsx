@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { differenceInCalendarDays } from "date-fns";
+import { eachDayOfInterval } from "date-fns";
 
 import Header from "./components/Header";
+import Calendar from "./components/Calendar";
 
 function App() {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
-  const [days, setDays] = useState(0);
+  const [dates, setDates] = useState<Date[]>([]);
 
   useEffect(() => {
     if (!!startDate && !!endDate) {
-      setDays(differenceInCalendarDays(endDate, startDate));
+      const dates = eachDayOfInterval({ start: startDate, end: endDate });
+
+      setDates(dates);
     }
   }, [startDate, endDate]);
 
@@ -23,7 +26,8 @@ function App() {
         endDate={endDate}
         setEndDate={setEndDate}
       />
-      {days}
+
+      <Calendar dates={dates} />
     </>
   );
 }

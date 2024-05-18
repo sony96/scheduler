@@ -13,10 +13,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
   disabled,
   className,
 }) => {
-  const handleDateChange = ({ $d }: any) => {
-    setDate($d);
-  };
-
   return (
     <div className={styles.datePicker}>
       <h2>{title}</h2>
@@ -25,7 +21,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
         <DemoContainer components={["DatePicker"]}>
           <DatePickerMui
             label={title}
-            onChange={handleDateChange}
+            onChange={({ $d }: any) => setDate($d)}
             disabled={disabled}
             format="DD/MM/YYYY"
             className={className}

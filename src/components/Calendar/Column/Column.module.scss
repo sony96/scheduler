@@ -1,0 +1,16 @@
+.column {
+  margin: 0 5px;
+  min-width: 150px;
+  text-align: center;
+  height: 500px;
+  background-color: rgb(121, 121, 121);
+
+  p {
+    font-weight: 600;
+    margin: 0 0 5px;
+  }
+
+  .columnHead {
+    padding: 10px 0;
+  }
+}
