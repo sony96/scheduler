@@ -6,13 +6,17 @@ import { isAfter, isBefore } from "date-fns";
 
 import DatePicker from "../DatePicker";
 
-const Header: React.FC<HeaderProps> = (props) => {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
+const Header: React.FC<HeaderProps> = ({
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
+}) => {
   const [error, setError] = useState("");
 
   const handleDate: DateHandler = (date, type) => {
+    !!error && setError("");
+
     if (type === DATE_TYPE.START) {
       if (endDate && isAfter(date, endDate)) {
         setError("Start Date is After End Date!");
@@ -31,8 +35,6 @@ const Header: React.FC<HeaderProps> = (props) => {
 
       setEndDate(date);
     }
-
-    !!error && setError("");
   };
 
   return (
