@@ -14,6 +14,7 @@ import chunk from "lodash/chunk";
 import Header from "./components/Header";
 import Calendar from "./components/Calendar";
 import Button from "./components/Button";
+import Modal from "./components/Modal";
 
 function App() {
   const [startDate, setStartDate] = useState<string>("");
@@ -22,6 +23,7 @@ function App() {
   const [dates, setDates] = useState<SchedulerDate[]>([]);
   const [autoDates, setAutoDates] = useState<SchedulerDate[]>([]);
   const [isAutocompleteUsed, setIsAutocompleteUsed] = useState<boolean>(false);
+  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
 
   const doesHaveHoursBooked = useMemo(
     () => !!dates.find((date) => date.hours.length),
@@ -179,12 +181,27 @@ function App() {
     setDates(mappedResult.flat());
   };
 
+  const handleResetApp = () => {
+    setStartDate("");
+    setEndDate("");
+    setDates([]);
+  };
+
   return (
     <div className={styles.app}>
+      {isModalOpened && (
+        <Modal
+          onClose={() => setIsModalOpened(false)}
+          onConfirm={handleResetApp}
+          message="Schedule successfully created."
+          buttonText="Create another plan"
+        />
+      )}
+
       <Header
         startDate={startDate}
-        setStartDate={setStartDate}
         endDate={endDate}
+        setStartDate={setStartDate}
         setEndDate={setEndDate}
         daysCount={dates.length}
       />
@@ -212,7 +229,14 @@ function App() {
         >
           Autocomplete
         </Button>
-        <Button type={BUTTON_TYPE.UPLOAD} disabled={true} onClick={() => {}}>
+        <Button
+          type={BUTTON_TYPE.UPLOAD}
+          disabled={!doesHaveHoursBooked}
+          onClick={() => {
+            console.log("DATA:", dates);
+            setIsModalOpened(true);
+          }}
+        >
           Upload
         </Button>
       </div>
