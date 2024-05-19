@@ -10,6 +10,7 @@ const Row: React.FC<RowProps> = ({
   mode = MODE.DISPLAY,
   time,
   timeId,
+  copyMode = false,
   addTime,
   deleteTime,
 }) => {
@@ -28,7 +29,11 @@ const Row: React.FC<RowProps> = ({
 
       {mode === MODE.DISPLAY && (
         <div
-          className={clsx(styles.row, styles["row-display"])}
+          className={clsx(
+            styles.row,
+            styles["row--display"],
+            copyMode && styles["row--disabled"]
+          )}
           onMouseEnter={() => setShowDelete(true)}
           onMouseLeave={() => setShowDelete(false)}
         >

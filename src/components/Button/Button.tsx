@@ -9,11 +9,15 @@ const Button: React.FC<ButtonProps> = ({
   type,
   disabled,
   onClick,
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       className={clsx(
         styles.button,
         disabled && styles["button--disabled"],

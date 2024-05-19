@@ -5,11 +5,13 @@ import type { ColumnProps } from "./Column.types";
 import { format, getDate, getMonth, getYear } from "date-fns";
 import Row from "../Row/Row";
 import clsx from "clsx";
+import { DATE_AUTOCOMPLETE_TYPE } from "../../../App.constants";
 
 const Column: React.FC<ColumnProps> = ({
   date,
   dateId,
   hours,
+  type,
   addTime,
   deleteTime,
 }) => {
@@ -18,7 +20,7 @@ const Column: React.FC<ColumnProps> = ({
   const [maxBookedHoursReached, setMaxBookedHoursReached] = useState(false);
 
   useEffect(() => {
-    hours.length === 5
+    hours.length === 4
       ? setMaxBookedHoursReached(true)
       : setMaxBookedHoursReached(false);
   }, [hours]);
@@ -30,6 +32,8 @@ const Column: React.FC<ColumnProps> = ({
   const deleteTimeHandler = (timeId: string) => {
     deleteTime(dateId, timeId);
   };
+
+  const isColumnInCopyMode = !!type && type === DATE_AUTOCOMPLETE_TYPE.COPY;
 
   return (
     <div
@@ -46,6 +50,7 @@ const Column: React.FC<ColumnProps> = ({
       <div
         className={clsx(
           styles.columnBody,
+          !!type && styles["columnBody--copyMode"],
           columnHover && styles["columnBody--hover"]
         )}
       >
@@ -55,6 +60,7 @@ const Column: React.FC<ColumnProps> = ({
             time={time}
             key={timeId}
             timeId={timeId}
+            copyMode={isColumnInCopyMode}
             deleteTime={deleteTimeHandler}
           />
         ))}
@@ -63,6 +69,7 @@ const Column: React.FC<ColumnProps> = ({
           <Row mode="addTime" addTime={addTimeHandler} />
         )}
       </div>
+      {!!type && <p className={styles.copyType}>{type}</p>}
     </div>
   );
 };

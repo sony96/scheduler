@@ -6,4 +6,6 @@ export type ButtonProps = {
   type: BUTTON_TYPE;
   disabled?: boolean;
   onClick: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 };

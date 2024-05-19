@@ -1,32 +1,51 @@
 import { useEffect, useMemo, useState } from "react";
-import { addHours, eachDayOfInterval, format, setHours } from "date-fns";
+import {
+  addHours,
+  eachDayOfInterval,
+  format,
+  setHours,
+  isEqual,
+} from "date-fns";
 import styles from "./App.module.scss";
-import { BUTTON_TYPE } from "./App.constants";
+import { BUTTON_TYPE, DATE_AUTOCOMPLETE_TYPE } from "./App.constants";
 import type { SchedulerDate } from "./App.types";
 import chunk from "lodash/chunk";
 
 import Header from "./components/Header";
 import Calendar from "./components/Calendar";
 import Button from "./components/Button";
-import { extendArrayWithCopies } from "./App.utils";
 
 function App() {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
 
   const [dates, setDates] = useState<SchedulerDate[]>([]);
+  const [autoDates, setAutoDates] = useState<SchedulerDate[]>([]);
+  const [isAutocompleteUsed, setIsAutocompleteUsed] = useState<boolean>(false);
+
+  const doesHaveHoursBooked = useMemo(
+    () => !!dates.find((date) => date.hours.length),
+    [dates]
+  );
 
   useEffect(() => {
     if (!!startDate && !!endDate) {
-      const dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
-        (date) => ({
+      const datesResult = eachDayOfInterval({
+        start: startDate,
+        end: endDate,
+      }).map((date) => {
+        const prevHours =
+          dates.length &&
+          dates.find((existingDate) => isEqual(existingDate.date, date))?.hours;
+
+        return {
           dateId: crypto.randomUUID(),
           date: date,
-          hours: [],
-        })
-      );
+          hours: prevHours || [],
+        };
+      });
 
-      setDates(dates);
+      setDates(datesResult);
     }
   }, [startDate, endDate]);
 
@@ -57,7 +76,7 @@ function App() {
 
     const latestHourFormatted = format(latestHour, "HH:mm");
 
-    if (latestHourFormatted === "00:00") {
+    if (latestHourFormatted === "20:00") {
       return;
     }
 
@@ -113,12 +132,20 @@ function App() {
       date: date.date,
       dateId: date.dateId,
       hours: [],
+      type: null,
     }));
 
+    setIsAutocompleteUsed(false);
     setDates(result);
   };
 
-  const handleAutocomplete = () => {
+  const handleAutocomplete = (predictMode: boolean) => {
+    if (!doesHaveHoursBooked) {
+      return;
+    }
+
+    !predictMode && setIsAutocompleteUsed(true);
+
     const nonEmptyIndexes = dates
       .map((date, index) => (date.hours.length ? index : null))
       .filter((index) => index !== null);
@@ -126,25 +153,30 @@ function App() {
     const maxIndex = nonEmptyIndexes.at(-1);
 
     const result = chunk(dates, (maxIndex || 0) + 1);
-    console.log(result);
 
-    const mappedResult = result.map((arr, index) => {
+    const mappedResult = result.map((arr, mainIndex) => {
       return [
         ...arr.map((date, index) => ({
           date: date.date,
           dateId: date.dateId,
           hours: result[0][index].hours,
+          type: predictMode
+            ? mainIndex === 0
+              ? DATE_AUTOCOMPLETE_TYPE.TEMPLATE
+              : DATE_AUTOCOMPLETE_TYPE.COPY
+            : null,
         })),
       ];
     });
 
+    if (predictMode) {
+      setAutoDates(mappedResult.flat());
+      return;
+    }
+
+    setIsAutocompleteUsed(true);
     setDates(mappedResult.flat());
   };
-
-  const doesHaveHoursBooked = useMemo(
-    () => !Boolean(dates.find((date) => date.hours.length)),
-    [dates]
-  );
 
   return (
     <>
@@ -157,7 +189,7 @@ function App() {
       />
 
       <Calendar
-        dates={dates}
+        dates={autoDates.length ? autoDates : dates}
         addTime={addTimeHandler}
         deleteTime={deleteTimeHandler}
       />
@@ -165,15 +197,17 @@ function App() {
       <div className={styles.actions}>
         <Button
           type={BUTTON_TYPE.RESET}
-          disabled={doesHaveHoursBooked}
+          disabled={!doesHaveHoursBooked}
           onClick={resetHandler}
         >
           Reset
         </Button>
         <Button
           type={BUTTON_TYPE.AUTOCOMPLETE}
-          disabled={doesHaveHoursBooked}
-          onClick={handleAutocomplete}
+          disabled={isAutocompleteUsed}
+          onClick={() => handleAutocomplete(false)}
+          onMouseEnter={() => handleAutocomplete(true)}
+          onMouseLeave={() => setAutoDates([])}
         >
           Autocomplete
         </Button>

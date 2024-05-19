@@ -2,7 +2,7 @@
   margin: 0 5px;
   min-width: 150px;
   text-align: center;
-  height: 500px;
+  height: 380px;
 
   p {
     font-weight: 600;
@@ -15,11 +15,20 @@
   }
 
   .columnBody {
-    height: 100%;
+    height: 75%;
     background-color: #f4f4f4;
 
     &--hover {
-      background-color: #D8D8D8;
+      background-color: #d8d8d8;
     }
+
+    &--copyMode {
+      border-bottom: 2px solid #ff01c7;
+    }
+  }
+
+  .copyType {
+    text-transform: capitalize;
+    color: #ff01c7;
   }
 }

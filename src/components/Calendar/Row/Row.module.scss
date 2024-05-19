@@ -1,4 +1,5 @@
 .row {
+  box-sizing: border-box;
   width: 100%;
   height: 50px;
   text-align: center;
@@ -23,6 +24,11 @@
     width: 20px;
     height: 20px;
     cursor: pointer;
+  }
+
+  &--disabled {
+    color: #9f9f9f !important;
+    border: 1px solid #9f9f9f !important;
   }
 }
 
