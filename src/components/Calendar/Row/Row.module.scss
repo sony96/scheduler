@@ -3,11 +3,16 @@
   height: 50px;
   text-align: center;
   line-height: 50px;
-  border: 1px solid red;
+  color: #ff01c7;
+  border: 1px solid #ff01c7;
+  background-color: #fff;
   position: relative;
 
   &--add {
     cursor: pointer;
+    background-color: #5c5c5c;
+    color: #fff;
+    border: 1px solid #5c5c5c;
   }
 
   .deleteIcon {
@@ -22,5 +27,5 @@
 }
 
 .row + .row {
-  margin-top: 5px;
+  margin-top: 10px;
 }

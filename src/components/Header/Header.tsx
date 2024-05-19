@@ -12,6 +12,7 @@ const Header: React.FC<HeaderProps> = ({
   setStartDate,
   endDate,
   setEndDate,
+  daysCount,
 }) => {
   const [error, setError] = useState("");
 
@@ -62,6 +63,8 @@ const Header: React.FC<HeaderProps> = ({
           setDate={(date) => handleDate(date, DATE_TYPE.END)}
           disabled={!startDate}
         />
+
+        <p className={styles.daysCounter}>{`${daysCount} days`}</p>
       </div>
 
       {!!error && <p>{error}</p>}

@@ -15,8 +15,6 @@ function App() {
     { dateId: string; date: Date; hours: { timeId: string; time: Date }[] }[]
   >([]);
 
-  console.log("CMP RERENDERED");
-
   useEffect(() => {
     if (!!startDate && !!endDate) {
       const dates = eachDayOfInterval({ start: startDate, end: endDate }).map(
@@ -131,6 +129,7 @@ function App() {
         setStartDate={setStartDate}
         endDate={endDate}
         setEndDate={setEndDate}
+        daysCount={dates.length}
       />
 
       <Calendar

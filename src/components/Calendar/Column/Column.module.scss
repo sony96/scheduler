@@ -3,7 +3,6 @@
   min-width: 150px;
   text-align: center;
   height: 500px;
-  background-color: rgb(121, 121, 121);
 
   p {
     font-weight: 600;
@@ -12,5 +11,15 @@
 
   .columnHead {
     padding: 10px 0;
+    background-color: transparent;
+  }
+
+  .columnBody {
+    height: 100%;
+    background-color: #f4f4f4;
+
+    &--hover {
+      background-color: #D8D8D8;
+    }
   }
 }

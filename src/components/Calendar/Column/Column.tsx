@@ -4,6 +4,7 @@ import type { ColumnProps } from "./Column.types";
 
 import { format, getDate, getMonth, getYear } from "date-fns";
 import Row from "../Row/Row";
+import clsx from "clsx";
 
 const Column: React.FC<ColumnProps> = ({
   date,
@@ -13,8 +14,7 @@ const Column: React.FC<ColumnProps> = ({
   deleteTime,
 }) => {
   const weekDayName = format(date, "EEEE");
-  //   const [hours, setHours] = useState<{ id: string; time: Date }[]>([]);
-  const [showAddButton, setShowAddButton] = useState(false);
+  const [columnHover, setColumnHover] = useState(false);
   const [maxBookedHoursReached, setMaxBookedHoursReached] = useState(false);
 
   useEffect(() => {
@@ -34,8 +34,8 @@ const Column: React.FC<ColumnProps> = ({
   return (
     <div
       className={styles.column}
-      onMouseEnter={() => setShowAddButton(true)}
-      onMouseLeave={() => setShowAddButton(false)}
+      onMouseEnter={() => setColumnHover(true)}
+      onMouseLeave={() => setColumnHover(false)}
     >
       <div className={styles.columnHead}>
         <p>{weekDayName}</p>
@@ -43,7 +43,12 @@ const Column: React.FC<ColumnProps> = ({
         <span>{`${getDate(date)}.${getMonth(date)}.${getYear(date)}`}</span>
       </div>
 
-      <div className={styles.columnBody}>
+      <div
+        className={clsx(
+          styles.columnBody,
+          columnHover && styles["columnBody--hover"]
+        )}
+      >
         {hours.map(({ time, timeId }) => (
           <Row
             mode="displayTime"
@@ -54,7 +59,7 @@ const Column: React.FC<ColumnProps> = ({
           />
         ))}
 
-        {showAddButton && !maxBookedHoursReached && (
+        {columnHover && !maxBookedHoursReached && (
           <Row mode="addTime" addTime={addTimeHandler} />
         )}
       </div>

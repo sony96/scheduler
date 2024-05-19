@@ -10,6 +10,7 @@
 .datePickers {
   display: flex;
   justify-content: flex-start;
+  align-items: flex-end;
 
   & .picker {
     margin: 0 10px;
