@@ -1,0 +1,21 @@
+.button {
+  min-width: 100px;
+  padding: 10px 20px;
+  margin: 0 5px;
+  text-align: center;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+
+  &--reset {
+    background-color: #303030;
+  }
+
+  &--autocomplete {
+    background-color: #e11bb6;
+  }
+
+  &--upload {
+    background-color: #c1c1c1;
+  }
+}

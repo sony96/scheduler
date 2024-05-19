@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { addHours, eachDayOfInterval, format, setHours } from "date-fns";
+import styles from "./App.module.scss";
+import { BUTTON_TYPE } from "./App.constants";
 
 import Header from "./components/Header";
 import Calendar from "./components/Calendar";
+import Button from "./components/Button";
 
 function App() {
   const [startDate, setStartDate] = useState<string>("");
@@ -11,6 +14,8 @@ function App() {
   const [dates, setDates] = useState<
     { dateId: string; date: Date; hours: { timeId: string; time: Date }[] }[]
   >([]);
+
+  console.log("CMP RERENDERED");
 
   useEffect(() => {
     if (!!startDate && !!endDate) {
@@ -104,6 +109,21 @@ function App() {
     setDates(result);
   };
 
+  const resetHandler = () => {
+    const result = dates.map((date) => ({
+      date: date.date,
+      dateId: date.dateId,
+      hours: [],
+    }));
+
+    setDates(result);
+  };
+
+  const isResetButtonDisabled = useMemo(
+    () => !Boolean(dates.find((date) => date.hours.length)),
+    [dates]
+  );
+
   return (
     <>
       <Header
@@ -118,6 +138,26 @@ function App() {
         addTime={addTimeHandler}
         deleteTime={deleteTimeHandler}
       />
+
+      <div className={styles.actions}>
+        <Button
+          type={BUTTON_TYPE.RESET}
+          disabled={isResetButtonDisabled}
+          onClick={resetHandler}
+        >
+          Reset
+        </Button>
+        <Button
+          type={BUTTON_TYPE.AUTOCOMPLETE}
+          disabled={false}
+          onClick={() => {}}
+        >
+          Autocomplete
+        </Button>
+        <Button type={BUTTON_TYPE.UPLOAD} disabled={false} onClick={() => {}}>
+          Upload
+        </Button>
+      </div>
     </>
   );
 }
