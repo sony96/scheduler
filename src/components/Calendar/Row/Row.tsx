@@ -9,9 +9,9 @@ import clsx from "clsx";
 const Row: React.FC<RowProps> = ({
   mode = MODE.DISPLAY,
   time,
-  id,
-  onAddTime,
-  onDeleteTime,
+  timeId,
+  addTime,
+  deleteTime,
 }) => {
   const [showDelete, setShowDelete] = useState(true);
 
@@ -20,7 +20,7 @@ const Row: React.FC<RowProps> = ({
       {mode === MODE.ADD && (
         <button
           className={clsx(styles.row, styles["row--add"])}
-          onClick={onAddTime}
+          onClick={addTime}
         >
           <span>Add Time</span>
         </button>
@@ -38,7 +38,7 @@ const Row: React.FC<RowProps> = ({
               src={deleteIcon}
               alt="delete"
               className={styles.deleteIcon}
-              onClick={() => !!onDeleteTime && onDeleteTime(id || "")}
+              onClick={() => !!deleteTime && deleteTime(timeId || "")}
             />
           )}
         </div>

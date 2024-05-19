@@ -2,20 +2,18 @@ import React, { useEffect, useState } from "react";
 import styles from "./Column.module.scss";
 import type { ColumnProps } from "./Column.types";
 
-import {
-  format,
-  getDate,
-  getMonth,
-  getYear,
-  setHours as setHoursFNS,
-  addHours,
-  getHours,
-} from "date-fns";
+import { format, getDate, getMonth, getYear } from "date-fns";
 import Row from "../Row/Row";
 
-const Column: React.FC<ColumnProps> = ({ date }) => {
+const Column: React.FC<ColumnProps> = ({
+  date,
+  dateId,
+  hours,
+  addTime,
+  deleteTime,
+}) => {
   const weekDayName = format(date, "EEEE");
-  const [hours, setHours] = useState<{ id: string; time: Date }[]>([]);
+  //   const [hours, setHours] = useState<{ id: string; time: Date }[]>([]);
   const [showAddButton, setShowAddButton] = useState(false);
   const [maxBookedHoursReached, setMaxBookedHoursReached] = useState(false);
 
@@ -26,35 +24,11 @@ const Column: React.FC<ColumnProps> = ({ date }) => {
   }, [hours]);
 
   const addTimeHandler = () => {
-    if (!hours.length) {
-      setHours([{ id: crypto.randomUUID(), time: setHoursFNS(date, 9) }]);
-      return;
-    }
-
-    const hoursCopy = [...hours];
-    const latestHour = hours.at(-1)!.time;
-    const latestHourFormatted = format(latestHour, "HH:mm");
-
-    if (latestHourFormatted === "00:00") {
-      return;
-    }
-
-    const incrementedHour = addHours(
-      latestHour,
-      +latestHourFormatted.split(":")[0] < 12 ? 3 : 4
-    );
-
-    hoursCopy.push({
-      id: crypto.randomUUID(),
-      time: incrementedHour,
-    });
-
-    setHours(hoursCopy);
+    addTime(dateId);
   };
 
-  const deleteTimeHandler = (id: string) => {
-    const filteredHours = hours.filter((hour) => hour.id !== id);
-    setHours(filteredHours);
+  const deleteTimeHandler = (timeId: string) => {
+    deleteTime(dateId, timeId);
   };
 
   return (
@@ -70,18 +44,18 @@ const Column: React.FC<ColumnProps> = ({ date }) => {
       </div>
 
       <div className={styles.columnBody}>
-        {hours.map(({ time, id }) => (
+        {hours.map(({ time, timeId }) => (
           <Row
             mode="displayTime"
             time={time}
-            key={id}
-            id={id}
-            onDeleteTime={deleteTimeHandler}
+            key={timeId}
+            timeId={timeId}
+            deleteTime={deleteTimeHandler}
           />
         ))}
 
         {showAddButton && !maxBookedHoursReached && (
-          <Row mode="addTime" onAddTime={addTimeHandler} />
+          <Row mode="addTime" addTime={addTimeHandler} />
         )}
       </div>
     </div>

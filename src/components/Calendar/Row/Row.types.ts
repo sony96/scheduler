@@ -1,7 +1,7 @@
 export type RowProps = {
   mode: "displayTime" | "addTime";
   time?: Date;
-  id?: string;
-  onAddTime?: () => void;
-  onDeleteTime?: (id: string) => void;
+  timeId?: string;
+  addTime?: () => void;
+  deleteTime?: (timeId: string) => void;
 };

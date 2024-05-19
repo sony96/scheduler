@@ -4,12 +4,18 @@ import type { CalendarProps } from "./Calendar.types";
 
 import Column from "./Column";
 
-const Calendar: React.FC<CalendarProps> = ({ dates }) => {
+const Calendar: React.FC<CalendarProps> = ({ dates, addTime, deleteTime }) => {
   return (
     <div className={styles.calendarWrapper}>
       <div className={styles.calendar}>
-        {dates.map((date) => (
-          <Column date={date} />
+        {dates.map(({ date, dateId, hours }) => (
+          <Column
+            date={date}
+            dateId={dateId}
+            hours={hours}
+            addTime={addTime}
+            deleteTime={deleteTime}
+          />
         ))}
       </div>
     </div>
