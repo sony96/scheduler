@@ -2,10 +2,12 @@ import React, { useCallback, useState } from "react";
 import styles from "./Header.module.scss";
 import type { HeaderProps, DateHandler } from "./Header.types";
 import { DATE_TYPE } from "./Header.constants";
-
 import { isAfter, isBefore } from "date-fns";
 
 import DatePicker from "../DatePicker";
+import LeftArrow from "../../assets/chevron-left.svg";
+import RightArrow from "../../assets/chevron-right.svg";
+import clsx from "clsx";
 
 const Header: React.FC<HeaderProps> = ({
   startDate,
@@ -44,27 +46,53 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <div className={styles.header}>
-      <div className={styles.title}>
+      <div className={styles.headerTitle}>
         <h1>Create new Schledule</h1>
       </div>
 
-      <div className={styles.datePickers}>
-        <DatePicker
-          className={styles.picker}
-          title="Start-Date"
-          setDate={(date) => {
-            handleDate(date, DATE_TYPE.START);
-          }}
-        />
+      <div className={styles.headerContent}>
+        <div className={styles.datePickers}>
+          <DatePicker
+            className={styles.picker}
+            title="Start-Date"
+            setDate={(date) => {
+              handleDate(date, DATE_TYPE.START);
+            }}
+          />
 
-        <DatePicker
-          className={styles.picker}
-          title="End-Date"
-          setDate={(date) => handleDate(date, DATE_TYPE.END)}
-          disabled={!startDate}
-        />
+          <DatePicker
+            className={styles.picker}
+            title="End-Date"
+            setDate={(date) => handleDate(date, DATE_TYPE.END)}
+            disabled={!startDate}
+          />
 
-        <p className={styles.daysCounter}>{`${daysCount} days`}</p>
+          <p className={styles.daysCounter}>{`${daysCount} days`}</p>
+        </div>
+
+        <div className={styles.actions}>
+          <button disabled={daysCount <= 7}>
+            <img
+              src={LeftArrow}
+              alt="left arrow"
+              className={clsx(
+                styles.arrow,
+                daysCount <= 7 && styles["arrow--inactive"]
+              )}
+            />
+          </button>
+
+          <button disabled={daysCount <= 7}>
+            <img
+              src={RightArrow}
+              alt="right arrow"
+              className={clsx(
+                styles.arrow,
+                daysCount <= 7 && styles["arrow--inactive"]
+              )}
+            />
+          </button>
+        </div>
       </div>
 
       {!!error && <p className={styles.error}>{error}</p>}

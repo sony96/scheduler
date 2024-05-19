@@ -3,8 +3,7 @@ export type HeaderProps = {
   setStartDate: (date: string) => void;
   endDate: string;
   setEndDate: (date: string) => void;
-  daysCount: number
+  daysCount: number;
 };
 
 export type DateHandler = (date: string, type: "start" | "end") => void;
-
