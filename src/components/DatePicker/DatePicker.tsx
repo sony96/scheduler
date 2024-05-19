@@ -25,6 +25,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
             disabled={disabled}
             format="DD/MM/YYYY"
             className={className}
+            disablePast
           />
         </DemoContainer>
       </LocalizationProvider>

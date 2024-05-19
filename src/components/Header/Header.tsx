@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({
 
       if (type === DATE_TYPE.START) {
         if (endDate && isAfter(date, endDate)) {
-          setError("Start Date is After End Date!");
+          setError("Error: Start Date is after End Date!");
 
           return;
         }
@@ -31,8 +31,8 @@ const Header: React.FC<HeaderProps> = ({
       }
 
       if (type === DATE_TYPE.END) {
-        if (endDate && isBefore(date, startDate)) {
-          setError("End Date is Before Start Date!");
+        if (startDate && isBefore(date, startDate)) {
+          setError("Error: End Date is before Start Date!");
           return;
         }
 
@@ -67,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({
         <p className={styles.daysCounter}>{`${daysCount} days`}</p>
       </div>
 
-      {!!error && <p>{error}</p>}
+      {!!error && <p className={styles.error}>{error}</p>}
     </div>
   );
 };

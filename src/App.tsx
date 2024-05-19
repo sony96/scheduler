@@ -33,14 +33,15 @@ function App() {
       const datesResult = eachDayOfInterval({
         start: startDate,
         end: endDate,
-      }).map((date) => {
+      }).map((newDate) => {
         const prevHours =
           dates.length &&
-          dates.find((existingDate) => isEqual(existingDate.date, date))?.hours;
+          dates.find((existingDate) => isEqual(existingDate.date, newDate))
+            ?.hours;
 
         return {
           dateId: crypto.randomUUID(),
-          date: date,
+          date: newDate,
           hours: prevHours || [],
         };
       });
@@ -179,7 +180,7 @@ function App() {
   };
 
   return (
-    <>
+    <div className={styles.app}>
       <Header
         startDate={startDate}
         setStartDate={setStartDate}
@@ -215,7 +216,7 @@ function App() {
           Upload
         </Button>
       </div>
-    </>
+    </div>
   );
 }
 
