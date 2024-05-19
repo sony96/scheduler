@@ -16,6 +16,7 @@ const Button: React.FC<ButtonProps> = ({
       disabled={disabled}
       className={clsx(
         styles.button,
+        disabled && styles["button--disabled"],
         type === BUTTON_TYPE.RESET && styles["button--reset"],
         type === BUTTON_TYPE.AUTOCOMPLETE && styles["button--autocomplete"],
         type === BUTTON_TYPE.UPLOAD && styles["button--upload"]

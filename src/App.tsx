@@ -2,18 +2,19 @@ import { useEffect, useMemo, useState } from "react";
 import { addHours, eachDayOfInterval, format, setHours } from "date-fns";
 import styles from "./App.module.scss";
 import { BUTTON_TYPE } from "./App.constants";
+import type { SchedulerDate } from "./App.types";
+import chunk from "lodash/chunk";
 
 import Header from "./components/Header";
 import Calendar from "./components/Calendar";
 import Button from "./components/Button";
+import { extendArrayWithCopies } from "./App.utils";
 
 function App() {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
 
-  const [dates, setDates] = useState<
-    { dateId: string; date: Date; hours: { timeId: string; time: Date }[] }[]
-  >([]);
+  const [dates, setDates] = useState<SchedulerDate[]>([]);
 
   useEffect(() => {
     if (!!startDate && !!endDate) {
@@ -117,7 +118,30 @@ function App() {
     setDates(result);
   };
 
-  const isResetButtonDisabled = useMemo(
+  const handleAutocomplete = () => {
+    const nonEmptyIndexes = dates
+      .map((date, index) => (date.hours.length ? index : null))
+      .filter((index) => index !== null);
+
+    const maxIndex = nonEmptyIndexes.at(-1);
+
+    const result = chunk(dates, (maxIndex || 0) + 1);
+    console.log(result);
+
+    const mappedResult = result.map((arr, index) => {
+      return [
+        ...arr.map((date, index) => ({
+          date: date.date,
+          dateId: date.dateId,
+          hours: result[0][index].hours,
+        })),
+      ];
+    });
+
+    setDates(mappedResult.flat());
+  };
+
+  const doesHaveHoursBooked = useMemo(
     () => !Boolean(dates.find((date) => date.hours.length)),
     [dates]
   );
@@ -141,19 +165,19 @@ function App() {
       <div className={styles.actions}>
         <Button
           type={BUTTON_TYPE.RESET}
-          disabled={isResetButtonDisabled}
+          disabled={doesHaveHoursBooked}
           onClick={resetHandler}
         >
           Reset
         </Button>
         <Button
           type={BUTTON_TYPE.AUTOCOMPLETE}
-          disabled={false}
-          onClick={() => {}}
+          disabled={doesHaveHoursBooked}
+          onClick={handleAutocomplete}
         >
           Autocomplete
         </Button>
-        <Button type={BUTTON_TYPE.UPLOAD} disabled={false} onClick={() => {}}>
+        <Button type={BUTTON_TYPE.UPLOAD} disabled={true} onClick={() => {}}>
           Upload
         </Button>
       </div>

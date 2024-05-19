@@ -8,6 +8,11 @@
   cursor: pointer;
   color: #fff;
 
+  &--disabled{
+    filter: opacity(.5);
+    cursor: not-allowed;
+  }
+
   &--reset {
     background-color: #303030;
   }

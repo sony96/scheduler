@@ -13,7 +13,7 @@ const Row: React.FC<RowProps> = ({
   addTime,
   deleteTime,
 }) => {
-  const [showDelete, setShowDelete] = useState(true);
+  const [showDelete, setShowDelete] = useState(false);
 
   return (
     <>
