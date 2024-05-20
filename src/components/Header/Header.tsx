@@ -55,6 +55,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className={styles.headerContent}>
         <div className={styles.datePickers}>
           <DatePicker
+            value={startDate}
             className={styles.picker}
             title="Start-Date"
             setDate={(date) => {
@@ -63,6 +64,7 @@ const Header: React.FC<HeaderProps> = ({
           />
 
           <DatePicker
+            value={endDate}
             className={styles.picker}
             title="End-Date"
             setDate={(date) => handleDate(date, DATE_TYPE.END)}
@@ -87,7 +89,10 @@ const Header: React.FC<HeaderProps> = ({
             />
           </button>
 
-          <button disabled={daysCount <= 7} onClick={() => onScroll(SCROLL_DIRECTION.RIGHT)}>
+          <button
+            disabled={daysCount <= 7}
+            onClick={() => onScroll(SCROLL_DIRECTION.RIGHT)}
+          >
             <img
               src={RightArrow}
               alt="right arrow"

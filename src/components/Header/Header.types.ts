@@ -1,9 +1,9 @@
 import { SCROLL_DIRECTION } from "../../App.constants";
 
 export type HeaderProps = {
-  startDate: string;
+  startDate: string | null;
   setStartDate: (date: string) => void;
-  endDate: string;
+  endDate: string | null;
   setEndDate: (date: string) => void;
   onScroll: (direction: SCROLL_DIRECTION) => void;
   daysCount: number;

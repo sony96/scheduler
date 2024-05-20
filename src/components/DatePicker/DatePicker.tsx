@@ -4,11 +4,13 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker as DatePickerMui } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 import { DatePickerProps } from "./DatePicker.types";
 
 const DatePicker: React.FC<DatePickerProps> = ({
   title,
+  value,
   setDate,
   disabled,
   className,
@@ -20,6 +22,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["DatePicker"]}>
           <DatePickerMui
+            value={dayjs(value)}
             label={title}
             onChange={({ $d }: any) => setDate($d)}
             disabled={disabled}

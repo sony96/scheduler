@@ -22,8 +22,8 @@ import Modal from "./components/Modal";
 
 function App() {
   const calendarRef = useRef<HTMLDivElement>(null);
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+  const [startDate, setStartDate] = useState<string | null>(null);
+  const [endDate, setEndDate] = useState<string | null>(null);
   const [dates, setDates] = useState<SchedulerDate[]>([]);
   const [autoDates, setAutoDates] = useState<SchedulerDate[]>([]);
   const [isAutocompleteUsed, setIsAutocompleteUsed] = useState<boolean>(false);
@@ -93,7 +93,6 @@ function App() {
         });
 
         setDates(result);
-
         return;
       }
 
@@ -209,8 +208,8 @@ function App() {
   };
 
   const handleResetApp = () => {
-    setStartDate("");
-    setEndDate("");
+    setStartDate(null);
+    setEndDate(null);
     setDates([]);
   };
 
