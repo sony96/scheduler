@@ -9,3 +9,7 @@ export enum DATE_AUTOCOMPLETE_TYPE {
   COPY = "copy",
 }
 
+export enum SCROLL_DIRECTION {
+  LEFT = "left",
+  RIGHT = "right",
+}

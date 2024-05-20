@@ -8,12 +8,14 @@ import DatePicker from "../DatePicker";
 import LeftArrow from "../../assets/chevron-left.svg";
 import RightArrow from "../../assets/chevron-right.svg";
 import clsx from "clsx";
+import { SCROLL_DIRECTION } from "../../App.constants";
 
 const Header: React.FC<HeaderProps> = ({
   startDate,
   setStartDate,
   endDate,
   setEndDate,
+  onScroll,
   daysCount,
 }) => {
   const [error, setError] = useState("");
@@ -71,7 +73,10 @@ const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className={styles.actions}>
-          <button disabled={daysCount <= 7}>
+          <button
+            disabled={daysCount <= 7}
+            onClick={() => onScroll(SCROLL_DIRECTION.LEFT)}
+          >
             <img
               src={LeftArrow}
               alt="left arrow"
@@ -82,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({
             />
           </button>
 
-          <button disabled={daysCount <= 7}>
+          <button disabled={daysCount <= 7} onClick={() => onScroll(SCROLL_DIRECTION.RIGHT)}>
             <img
               src={RightArrow}
               alt="right arrow"

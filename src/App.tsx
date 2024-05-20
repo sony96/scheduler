@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   addHours,
   eachDayOfInterval,
@@ -7,7 +7,11 @@ import {
   isEqual,
 } from "date-fns";
 import styles from "./App.module.scss";
-import { BUTTON_TYPE, DATE_AUTOCOMPLETE_TYPE } from "./App.constants";
+import {
+  BUTTON_TYPE,
+  DATE_AUTOCOMPLETE_TYPE,
+  SCROLL_DIRECTION,
+} from "./App.constants";
 import type { SchedulerDate } from "./App.types";
 import chunk from "lodash/chunk";
 
@@ -17,13 +21,30 @@ import Button from "./components/Button";
 import Modal from "./components/Modal";
 
 function App() {
+  const calendarRef = useRef<HTMLDivElement>(null);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
-
   const [dates, setDates] = useState<SchedulerDate[]>([]);
   const [autoDates, setAutoDates] = useState<SchedulerDate[]>([]);
   const [isAutocompleteUsed, setIsAutocompleteUsed] = useState<boolean>(false);
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
+  const [scrollOffset, setScrollOffset] = useState<number>(0);
+
+  const handleScroll = () => {
+    setScrollOffset(calendarRef.current!.scrollLeft);
+  };
+
+  useEffect(() => {
+    const scrollableElement = calendarRef.current;
+
+    if (scrollableElement) {
+      scrollableElement.addEventListener("scroll", handleScroll);
+
+      return () => {
+        scrollableElement.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, []);
 
   const doesHaveHoursBooked = useMemo(
     () => !!dates.find((date) => date.hours.length),
@@ -52,18 +73,56 @@ function App() {
     }
   }, [startDate, endDate]);
 
-  const addTimeHandler = (dayId: string) => {
-    const currentDay = dates.find((day) => day.dateId === dayId);
+  const addTimeHandler = useCallback(
+    (dayId: string) => {
+      const currentDay = dates.find((day) => day.dateId === dayId);
 
-    if (!currentDay?.hours.length) {
+      if (!currentDay?.hours.length) {
+        const result = dates.map((date) => {
+          if (date.dateId === dayId) {
+            return {
+              dateId: date.dateId,
+              date: date.date,
+              hours: [
+                { timeId: crypto.randomUUID(), time: setHours(date.date, 9) },
+              ],
+            };
+          }
+
+          return date;
+        });
+
+        setDates(result);
+
+        return;
+      }
+
+      const latestHour = currentDay?.hours.at(-1)!.time;
+
+      const latestHourFormatted = format(latestHour, "HH:mm");
+
+      if (latestHourFormatted === "20:00") {
+        return;
+      }
+
+      const incrementedHour = addHours(
+        latestHour,
+        +latestHourFormatted.split(":")[0] < 12 ? 3 : 4
+      );
+
       const result = dates.map((date) => {
         if (date.dateId === dayId) {
+          const hoursCopy = [...date.hours];
+
+          hoursCopy.push({
+            timeId: crypto.randomUUID(),
+            time: incrementedHour,
+          });
+
           return {
             dateId: date.dateId,
             date: date.date,
-            hours: [
-              { timeId: crypto.randomUUID(), time: setHours(date.date, 9) },
-            ],
+            hours: hoursCopy,
           };
         }
 
@@ -71,64 +130,32 @@ function App() {
       });
 
       setDates(result);
+    },
+    [dates]
+  );
 
-      return;
-    }
+  const deleteTimeHandler = useCallback(
+    (dateId: string, timeId: string) => {
+      const result = dates.map((date) => {
+        if (date.dateId === dateId) {
+          const filteredHours = date.hours.filter(
+            (hours) => hours.timeId !== timeId
+          );
 
-    const latestHour = currentDay?.hours.at(-1)!.time;
+          return {
+            date: date.date,
+            dateId: date.dateId,
+            hours: filteredHours,
+          };
+        }
 
-    const latestHourFormatted = format(latestHour, "HH:mm");
+        return date;
+      });
 
-    if (latestHourFormatted === "20:00") {
-      return;
-    }
-
-    const incrementedHour = addHours(
-      latestHour,
-      +latestHourFormatted.split(":")[0] < 12 ? 3 : 4
-    );
-
-    const result = dates.map((date) => {
-      if (date.dateId === dayId) {
-        const hoursCopy = [...date.hours];
-
-        hoursCopy.push({
-          timeId: crypto.randomUUID(),
-          time: incrementedHour,
-        });
-
-        return {
-          dateId: date.dateId,
-          date: date.date,
-          hours: hoursCopy,
-        };
-      }
-
-      return date;
-    });
-
-    setDates(result);
-  };
-
-  const deleteTimeHandler = (dateId: string, timeId: string) => {
-    const result = dates.map((date) => {
-      if (date.dateId === dateId) {
-        const filteredHours = date.hours.filter(
-          (hours) => hours.timeId !== timeId
-        );
-
-        return {
-          date: date.date,
-          dateId: date.dateId,
-          hours: filteredHours,
-        };
-      }
-
-      return date;
-    });
-
-    setDates(result);
-  };
+      setDates(result);
+    },
+    [dates]
+  );
 
   const resetHandler = () => {
     const result = dates.map((date) => ({
@@ -187,6 +214,24 @@ function App() {
     setDates([]);
   };
 
+  const handleOnScroll = (direction: SCROLL_DIRECTION) => {
+    let offset;
+
+    if (direction === SCROLL_DIRECTION.LEFT) {
+      offset = scrollOffset - calendarRef.current!.clientWidth;
+    }
+
+    if (direction === SCROLL_DIRECTION.RIGHT) {
+      offset = scrollOffset + calendarRef.current!.clientWidth;
+    }
+
+    calendarRef.current?.scrollTo({
+      top: 0,
+      left: offset,
+      behavior: "auto",
+    });
+  };
+
   return (
     <div className={styles.app}>
       {isModalOpened && (
@@ -201,15 +246,17 @@ function App() {
       <Header
         startDate={startDate}
         endDate={endDate}
+        daysCount={dates.length}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
-        daysCount={dates.length}
+        onScroll={handleOnScroll}
       />
 
       <Calendar
         dates={autoDates.length ? autoDates : dates}
         addTime={addTimeHandler}
         deleteTime={deleteTimeHandler}
+        ref={calendarRef}
       />
 
       <div className={styles.actions}>
