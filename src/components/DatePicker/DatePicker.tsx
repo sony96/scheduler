@@ -10,7 +10,6 @@ import dayjs from "dayjs";
 
 const DatePicker: React.FC<DatePickerProps> = ({
   title,
-  value,
   setDate,
   disabled,
   className,
@@ -23,6 +22,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["DatePicker"]}>
           <DatePickerMui
+            label={title}
             onChange={(date: any) => setDate(new Date(date))}
             disabled={disabled}
             format="DD/MM/YYYY"

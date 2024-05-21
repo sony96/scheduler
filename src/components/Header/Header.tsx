@@ -52,7 +52,6 @@ const Header: React.FC<HeaderProps> = ({
       <div className={styles.headerContent}>
         <div className={styles.datePickers}>
           <DatePicker
-            value={startDate}
             className={styles.picker}
             title="Start-Date"
             setDate={(date) => {
@@ -61,7 +60,6 @@ const Header: React.FC<HeaderProps> = ({
           />
 
           <DatePicker
-            value={endDate}
             className={styles.picker}
             title="End-Date"
             setDate={(date) => handleDate(date, DATE_TYPE.END)}

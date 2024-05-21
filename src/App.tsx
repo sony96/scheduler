@@ -253,6 +253,18 @@ function App() {
     });
   };
 
+  const handleUpload = () => {
+    setIsModalOpened(true);
+    setDates([]);
+
+    const result = dates.map(({ date, hours }) => ({
+      date,
+      hours: hours.map((hour) => ({ time: hour.time })),
+    }));
+
+    console.log(result);
+  };
+
   return (
     <div className={styles.app}>
       {isModalOpened && (
@@ -302,10 +314,7 @@ function App() {
         <Button
           type={BUTTON_TYPE.UPLOAD}
           disabled={!doesHaveHoursBooked}
-          onClick={() => {
-            console.log("DATA:", dates);
-            setIsModalOpened(true);
-          }}
+          onClick={handleUpload}
         >
           Upload
         </Button>

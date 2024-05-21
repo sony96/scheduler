@@ -1,6 +1,6 @@
 export type DatePickerProps = {
   title: string;
-  value: Date | undefined;
+  value?: Date | undefined;
   setDate: (date: Date) => void;
   disabled?: boolean;
   className?: string;
