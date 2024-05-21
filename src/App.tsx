@@ -257,6 +257,9 @@ function App() {
     setStartDate(null);
     setEndDate(null);
     setDates([]);
+    setIsAutocompleteUsed(false);
+    setDisableLeftArrow(true);
+    setDisableRightArrow(true);
 
     const result = dates.map(({ date, hours }) => ({
       date: `${getDate(date)}.${getMonth(date)}.${getYear(date)}`,
