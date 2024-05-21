@@ -1,5 +1,7 @@
 Pheonix React Coding Challenge
 
+NOTE: If there is an issue with installing node modules, please use NODE version 20.11.0 with NPM version 10.2.4
+
 ## Available Scripts
 In the project directory, you can run:
 
