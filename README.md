@@ -1,4 +1,4 @@
-Pheonix React Coding Challenge
+PHOENIX React Coding Challenge
 
 NOTE: If there is an issue with installing node modules, please use NODE version 20.11.0 with NPM version 10.2.4
 
