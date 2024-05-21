@@ -4,9 +4,9 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker as DatePickerMui } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
 
 import { DatePickerProps } from "./DatePicker.types";
+import dayjs from "dayjs";
 
 const DatePicker: React.FC<DatePickerProps> = ({
   title,
@@ -14,6 +14,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   setDate,
   disabled,
   className,
+  minDate,
 }) => {
   return (
     <div className={styles.datePicker}>
@@ -22,13 +23,12 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["DatePicker"]}>
           <DatePickerMui
-            value={dayjs(value)}
-            label={title}
-            onChange={({ $d }: any) => setDate($d)}
+            onChange={(date: any) => setDate(new Date(date))}
             disabled={disabled}
             format="DD/MM/YYYY"
             className={className}
             disablePast
+            minDate={dayjs(minDate)}
           />
         </DemoContainer>
       </LocalizationProvider>

@@ -22,16 +22,36 @@ import Modal from "./components/Modal";
 
 function App() {
   const calendarRef = useRef<HTMLDivElement>(null);
-  const [startDate, setStartDate] = useState<string | null>(null);
-  const [endDate, setEndDate] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [dates, setDates] = useState<SchedulerDate[]>([]);
   const [autoDates, setAutoDates] = useState<SchedulerDate[]>([]);
   const [isAutocompleteUsed, setIsAutocompleteUsed] = useState<boolean>(false);
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const [scrollOffset, setScrollOffset] = useState<number>(0);
+  const [disableLeftArrow, setDisableLeftArrow] = useState<boolean>(true);
+  const [disableRightArrow, setDisableRightArrow] = useState<boolean>(true);
 
   const handleScroll = () => {
-    setScrollOffset(calendarRef.current!.scrollLeft);
+    const scrollLeft = +calendarRef.current!.scrollLeft.toFixed(0);
+    setScrollOffset(scrollLeft);
+
+    const lastPageLeftOffset =
+      (calendarRef.current?.scrollWidth || 0) -
+      (calendarRef.current?.clientWidth || 0);
+
+    if (scrollLeft === 0) {
+      setDisableLeftArrow(true);
+      setDisableRightArrow(false);
+      return;
+    } else if (scrollLeft === lastPageLeftOffset) {
+      setDisableRightArrow(true);
+      setDisableLeftArrow(false);
+      return;
+    }
+
+    setDisableLeftArrow(false);
+    setDisableRightArrow(false);
   };
 
   useEffect(() => {
@@ -68,6 +88,14 @@ function App() {
           hours: prevHours || [],
         };
       });
+
+      if (datesResult.length > 7) {
+        setDisableRightArrow(false);
+        setDisableRightArrow(false);
+      } else {
+        setDisableRightArrow(true);
+        setDisableRightArrow(true);
+      }
 
       setDates(datesResult);
     }
@@ -207,12 +235,6 @@ function App() {
     setDates(mappedResult.flat());
   };
 
-  const handleResetApp = () => {
-    setStartDate(null);
-    setEndDate(null);
-    setDates([]);
-  };
-
   const handleOnScroll = (direction: SCROLL_DIRECTION) => {
     let offset;
 
@@ -236,7 +258,7 @@ function App() {
       {isModalOpened && (
         <Modal
           onClose={() => setIsModalOpened(false)}
-          onConfirm={handleResetApp}
+          onConfirm={() => setDates([])}
           message="Schedule successfully created."
           buttonText="Create another plan"
         />
@@ -249,6 +271,8 @@ function App() {
         setStartDate={setStartDate}
         setEndDate={setEndDate}
         onScroll={handleOnScroll}
+        disableLeftArrow={disableLeftArrow}
+        disableRightArrow={disableRightArrow}
       />
 
       <Calendar

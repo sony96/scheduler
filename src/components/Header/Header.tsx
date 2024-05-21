@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import styles from "./Header.module.scss";
 import type { HeaderProps, DateHandler } from "./Header.types";
 import { DATE_TYPE } from "./Header.constants";
-import { isAfter, isBefore } from "date-fns";
+import { isAfter } from "date-fns";
 
 import DatePicker from "../DatePicker";
 import LeftArrow from "../../assets/chevron-left.svg";
@@ -17,6 +17,8 @@ const Header: React.FC<HeaderProps> = ({
   setEndDate,
   onScroll,
   daysCount,
+  disableLeftArrow,
+  disableRightArrow,
 }) => {
   const [error, setError] = useState("");
 
@@ -26,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({
 
       if (type === DATE_TYPE.START) {
         if (endDate && isAfter(date, endDate)) {
-          setError("Error: Start Date is after End Date!");
+          setError(`Error: Start Date is after End Date`);
 
           return;
         }
@@ -35,11 +37,6 @@ const Header: React.FC<HeaderProps> = ({
       }
 
       if (type === DATE_TYPE.END) {
-        if (startDate && isBefore(date, startDate)) {
-          setError("Error: End Date is before Start Date!");
-          return;
-        }
-
         setEndDate(date);
       }
     },
@@ -68,41 +65,43 @@ const Header: React.FC<HeaderProps> = ({
             className={styles.picker}
             title="End-Date"
             setDate={(date) => handleDate(date, DATE_TYPE.END)}
-            disabled={!startDate}
+            minDate={startDate}
           />
 
           <p className={styles.daysCounter}>{`${daysCount} days`}</p>
         </div>
 
-        <div className={styles.actions}>
-          <button
-            disabled={daysCount <= 7}
-            onClick={() => onScroll(SCROLL_DIRECTION.LEFT)}
-          >
-            <img
-              src={LeftArrow}
-              alt="left arrow"
-              className={clsx(
-                styles.arrow,
-                daysCount <= 7 && styles["arrow--inactive"]
-              )}
-            />
-          </button>
+        {(!disableLeftArrow || !disableRightArrow) && (
+          <div className={styles.actions}>
+            <button
+              disabled={disableLeftArrow}
+              onClick={() => onScroll(SCROLL_DIRECTION.LEFT)}
+            >
+              <img
+                src={LeftArrow}
+                alt="left arrow"
+                className={clsx(
+                  styles.arrow,
+                  disableLeftArrow && styles["arrow--inactive"]
+                )}
+              />
+            </button>
 
-          <button
-            disabled={daysCount <= 7}
-            onClick={() => onScroll(SCROLL_DIRECTION.RIGHT)}
-          >
-            <img
-              src={RightArrow}
-              alt="right arrow"
-              className={clsx(
-                styles.arrow,
-                daysCount <= 7 && styles["arrow--inactive"]
-              )}
-            />
-          </button>
-        </div>
+            <button
+              disabled={disableRightArrow}
+              onClick={() => onScroll(SCROLL_DIRECTION.RIGHT)}
+            >
+              <img
+                src={RightArrow}
+                alt="right arrow"
+                className={clsx(
+                  styles.arrow,
+                  disableRightArrow && styles["arrow--inactive"]
+                )}
+              />
+            </button>
+          </div>
+        )}
       </div>
 
       {!!error && <p className={styles.error}>{error}</p>}
