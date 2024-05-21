@@ -66,11 +66,6 @@ function App() {
     }
   }, []);
 
-  const doesHaveHoursBooked = useMemo(
-    () => !!dates.find((date) => date.hours.length),
-    [dates]
-  );
-
   useEffect(() => {
     if (!!startDate && !!endDate) {
       const datesResult = eachDayOfInterval({
@@ -259,11 +254,24 @@ function App() {
 
     const result = dates.map(({ date, hours }) => ({
       date,
-      hours: hours.map((hour) => hour.time),
+      hours: hours.map((hour) => ({ time: hour.time })),
     }));
 
     console.log(result);
   };
+
+  const doesHaveHoursBooked = useMemo(
+    () => !!dates.find((date) => date.hours.length),
+    [dates]
+  );
+
+  const doesHaveDateWithoutBooking = useMemo(() => {
+    if (dates.length) {
+      const res = !!dates.find((date) => !date.hours.length);
+      return res;
+    }
+    return true;
+  }, [dates]);
 
   return (
     <div className={styles.app}>
@@ -313,7 +321,7 @@ function App() {
         </Button>
         <Button
           type={BUTTON_TYPE.UPLOAD}
-          disabled={!doesHaveHoursBooked}
+          disabled={doesHaveDateWithoutBooking}
           onClick={handleUpload}
         >
           Upload
