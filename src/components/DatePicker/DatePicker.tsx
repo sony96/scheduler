@@ -14,6 +14,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   disabled,
   className,
   minDate,
+  value,
 }) => {
   return (
     <div className={styles.datePicker}>
@@ -22,7 +23,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={["DatePicker"]}>
           <DatePickerMui
-            label={title}
+            value={!!value ? dayjs(value) : null}
             onChange={(date: any) => setDate(new Date(date))}
             disabled={disabled}
             format="DD/MM/YYYY"
@@ -36,4 +37,4 @@ const DatePicker: React.FC<DatePickerProps> = ({
   );
 };
 
-export default DatePicker;
+export default React.memo(DatePicker);

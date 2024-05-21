@@ -26,8 +26,8 @@ import Modal from "./components/Modal";
 
 function App() {
   const calendarRef = useRef<HTMLDivElement>(null);
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [dates, setDates] = useState<SchedulerDate[]>([]);
   const [autoDates, setAutoDates] = useState<SchedulerDate[]>([]);
   const [isAutocompleteUsed, setIsAutocompleteUsed] = useState<boolean>(false);
@@ -254,6 +254,8 @@ function App() {
 
   const handleUpload = () => {
     setIsModalOpened(true);
+    setStartDate(null);
+    setEndDate(null);
     setDates([]);
 
     const result = dates.map(({ date, hours }) => ({
