@@ -5,6 +5,10 @@ import {
   format,
   setHours,
   isEqual,
+  getDate,
+  getMonth,
+  getYear,
+  formatDate,
 } from "date-fns";
 import styles from "./App.module.scss";
 import {
@@ -253,8 +257,8 @@ function App() {
     setDates([]);
 
     const result = dates.map(({ date, hours }) => ({
-      date,
-      hours: hours.map((hour) => (hour.time)),
+      date: `${getDate(date)}.${getMonth(date)}.${getYear(date)}`,
+      hours: hours.map((hour) => formatDate(hour.time, "HH:mm")),
     }));
 
     console.log(result);
