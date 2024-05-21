@@ -259,7 +259,7 @@ function App() {
 
     const result = dates.map(({ date, hours }) => ({
       date,
-      hours: hours.map((hour) => ({ time: hour.time })),
+      hours: hours.map((hour) => hour.time),
     }));
 
     console.log(result);
