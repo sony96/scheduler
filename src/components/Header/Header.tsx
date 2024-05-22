@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <div className={styles.header}>
       <div className={styles.headerTitle}>
-        <h1>Create new Schledule</h1>
+        <h1>Create new Schedule</h1>
       </div>
 
       <div className={styles.headerContent}>
